@@ -22,7 +22,7 @@ arvore* GetNodo(arvore *nodo, short flag)
         return filaNodos[j]->pEsq;
 }
 
-void arvoreSimetrica(arvore *raiz, int quantidadeElementos)
+arvore** arvoreSimetrica(arvore *raiz, int quantidadeElementos)
 {
     int altura=2, filaTamanho=2, aux, i=0, j=0, k=1;
     arvore **vetor, **filaNodos, **filaNodos_aux;
@@ -69,6 +69,7 @@ void arvoreSimetrica(arvore *raiz, int quantidadeElementos)
         i=0;
         j=0;
     }
-
-    return;
+    
+    free(filaNodos);
+    return vetor;
 }
