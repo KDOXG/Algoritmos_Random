@@ -26,7 +26,7 @@ arvore** arvoreSimetrica(arvore *raiz, int quantidadeElementos)
 {
     int altura=2, filaTamanho=2, aux, i=0, j=0, k=1;
     arvore **vetor, **filaNodos, **filaNodos_aux;
-    filaNodos = malloc((filaTamanho)*sizeof(arvore*));
+    filaNodos = malloc(filaTamanho*sizeof(arvore*));
     filaNodos[0] = raiz->pEsq;
     filaNodos[1] = raiz->pDir;
     vetor = malloc(quantidadeElementos*sizeof(arvore*));
@@ -69,7 +69,7 @@ arvore** arvoreSimetrica(arvore *raiz, int quantidadeElementos)
         i=0;
         j=0;
     }
-    
+
     free(filaNodos);
     return vetor;
 }
