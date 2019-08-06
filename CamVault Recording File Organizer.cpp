@@ -3,8 +3,8 @@
 #include <cstdio>
 #include <string>
 
-/** Usage: Have a data.txt file with all your video file names in each line (you can use "dir > data.txt" command on cmd and manually removes all lines without file names — you don't need to worry about the other information like date or anything that isn't file name, the program will handle it, just be sure that every line has one file name). The files need to be named in CamVault's format: C4_"camgirl_nickname"_"Month"-"day"-"year"_"hour"-"minute"-"second".mp4
- * This program nativelly works with Cam4's recordings, but it should work fine with Chaturbate's or MyFreeCams' recordings too, provided you modify in this source code at lines 89 and 93, changing "C4_" to "CB_" for work with Chaturbate, or to "MFC_" for work with MyFreeCams.
+/** Usage: It will create a data.txt file with all your video file names in each line. The files needs to be named in CamVault's format: C4_"camgirl_nickname"_"Month"-"day"-"year"_"hour"-"minute"-"second".mp4
+ * This program natively works with Cam4's recordings, but it should work fine with Chaturbate's or MyFreeCams' recordings too, provided you modify in this source code changing "C4_" to "CB_" to work with Chaturbate, or to "MFC_" to work with MyFreeCams.
  */
 
 int findMonth(std::string file)
@@ -34,19 +34,19 @@ int findMonth(std::string file)
     return file.find("_December-");
 }
 
-void fixPath(std::string path, int* i, int j)
+void fixPath(std::string path)
 {
-    int k = 0;
+    int i = 0, j = 0, k = 0;
     std::string temp1 = std::string();
     std::string temp2 = std::string();
     std::string temp3 = std::string();
-    for (*i = 0; *i < path.size(); *i=*i+1)
+    for (i = 0; i < path.size(); i++)
     {
-        if (path[*i] == '\\')
-            j = *i;
-        if (path[*i] == ' ')
+        if (path[i] == '\\')
+            j = i;
+        if (path[i] == ' ')
         {
-            k = path.find('\\',*i);
+            k = path.find('\\',i);
             temp1 = path.substr(0,j);
             temp1 += "\"";
             temp2 = path.substr(j,k-1);
@@ -54,8 +54,8 @@ void fixPath(std::string path, int* i, int j)
             temp3 = path.substr(k,path.size());
             path.erase(path.begin(),path.end());
             path += temp1 + temp2 + temp3;
-            *i +=2;
-            *i = path.find('\"',*i);
+            i +=2;
+            i = path.find('\"',i);
             temp1.erase(temp1.begin(),temp1.end());
             temp2.erase(temp2.begin(),temp2.end());
             temp3.erase(temp3.begin(),temp3.end());
@@ -74,11 +74,11 @@ int main(int argc, char *argv[])
 
     folder.erase(folder.begin(),folder.end());
     folder.append(argv[0]);
-    fixPath(folder,&i,j);
-
-    for (; folder[i] != '\\'; i--);
+    fixPath(folder);
+	i = folder.rfind('\\');
     folder.erase(folder.begin()+i+1,folder.end());
 
+    system("dir > data.txt");
     std::ifstream cam;
     cam.open("data.txt", std::ios::out);
 
@@ -86,6 +86,13 @@ int main(int argc, char *argv[])
     {
         video.erase(video.begin(),video.end());
         getline(cam,video);
+        while (video.find("C4_") == -1 && !cam.fail())
+        {
+            video.erase(video.begin(),video.end());
+            getline(cam,video);
+        }
+        if (cam.fail())
+            break;
         i = video.find("C4_");
         video.erase(video.begin(),video.begin()+i-1);
 
@@ -93,7 +100,7 @@ int main(int argc, char *argv[])
         i = video.find("C4_");
         j = findMonth(video);
         if (j == -1)
-            return -1;
+            break;
         i += 3;
         j -= i;
         nameOfNewFolder = video.substr(i,j);
@@ -110,5 +117,7 @@ int main(int argc, char *argv[])
         system(param.c_str());
     }
 
+    cam.close();
+    system("del data.txt");
     return 0;
 }
