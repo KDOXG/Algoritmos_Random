@@ -110,10 +110,10 @@ int main(int argc, char *argv[])
         newFolder += nameOfNewFolder;
 
         param.erase(param.begin(),param.end());
-        param += "mkdir " + nameOfNewFolder;
+        param += "mkdir " + nameOfNewFolder + " 2>NUL";
         system(param.c_str());
         param.erase(param.begin(),param.end());
-        param += "move " + video + " " + nameOfNewFolder;
+        param += "move " + video + " " + nameOfNewFolder + " >NUL";
         system(param.c_str());
     }
 
