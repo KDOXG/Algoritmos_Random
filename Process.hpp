@@ -1,8 +1,18 @@
-typedef unsigned char byte;
+﻿typedef unsigned char byte;
+
+enum state_t {
+	EM_EXECUCAO,
+	EM_ESPERA,
+	BLOQUEADO,
+	PRONTO,
+	MORTO,
+	FINISH
+};
 
 class Process
 {
 private:
+	state_t estado;		//Estado atual do processo
 	unsigned time;      //Representa o tempo em que o processo é recebido pelo SO
 	unsigned slice;     //Número de slices restantes para executar o processo
 	unsigned memory;    //Memoria a gastar
@@ -13,22 +23,14 @@ private:
 public:
 	Process(unsigned time, unsigned slice, unsigned memory, byte level);
 	unsigned getMemory();
+	unsigned getTime();
 	unsigned getTotal();
 	byte getLevel();
-	void setLevel();
+	void setLevel(bool memory);
 	byte getSlice();
 	void setSlice();
 	unsigned getDuration();
 	void setDuration();
+	void setChange(unsigned m, unsigned n);
 	bool end();
 };
-
-enum states {
-	NOVO,
-	EM_EXECUCAO,
-	EM_ESPERA,
-	BLOQUEADO,
-	PRONTO,
-	ZUMBI,
-	MORTO
-} state_t;

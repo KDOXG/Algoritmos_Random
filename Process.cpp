@@ -2,6 +2,7 @@
 
 Process::Process(unsigned time, unsigned slice, unsigned memory, byte level)
 {
+	estado = EM_ESPERA;
 	this->time = time;
 	this->slice = slice;
 	this->memory = memory;
@@ -14,6 +15,10 @@ unsigned Process::getMemory()
 {
 	return memory;
 }
+unsigned Process::getTime()
+{
+	return time;
+}
 unsigned Process::getTotal()
 {
 	return total;
@@ -22,11 +27,20 @@ byte Process::getLevel()
 {
 	return level;
 }
-void Process::setLevel()
+void Process::setLevel(bool memory)
 {
-	if (level < 4)
-		level++;
-	call = 0;
+	if (memory)
+	{
+
+	}
+	else
+	{
+		if (level < 4 && call == 10)
+		{
+			level++;
+			call = 0;
+		}
+	}
 }
 byte Process::getSlice()
 {
@@ -34,7 +48,9 @@ byte Process::getSlice()
 }
 void Process::setSlice()
 {
+	call++;
 	slice--;
+	estado = slice == 0 ? MORTO : EM_EXECUCAO;
 }
 unsigned Process::getDuration()
 {
@@ -44,10 +60,15 @@ void Process::setDuration()
 {
 	duration++;
 }
+void Process::setChange(unsigned m, unsigned n)
+{
+	estado = estado == EM_EXECUCAO ? EM_ESPERA : estado;
+	estado = estado == BLOQUEADO && memory < n - m ? PRONTO : estado;
+}
 bool Process::end()
 {
-	if (slice == 0)
-		return true;
-	else
+	if (estado == FINISH)
 		return false;
+	estado = estado == MORTO ? FINISH : estado;
+	return estado == FINISH ? true : false;
 }

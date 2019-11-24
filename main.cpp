@@ -9,7 +9,6 @@
 #include "Process.cpp"
 
 int error(const char* arg);
-bool check(std::vector<Process> a);
 
 int main(int argc, char* argv[])
 {
@@ -72,10 +71,55 @@ int main(int argc, char* argv[])
 		if (processList[i].getMemory() > totalMemory)
 			return error("Erro: um ou mais processos nao possuem memoria o suficiente! Desligando...\n");
 
-    //Existem cinco listas de processos pois existe uma para cada prioridade
-    std::list<Process*> *processes = new std::list<Process*>[5];
+    //Existem cinco filas de processos pois existe uma para cada prioridade
+    std::list<Process*> processes[5];
 	
+	//Loop principal	***********************
 
+	unsigned k;
+	unsigned j;
+	while (n > 0)
+	{
+		k = 0;
+		j = 0;
+
+		//Insercao na lista pelo tempo
+		for (unsigned i = 0; i < processList.size(); i++)
+		{
+			if (processList[i].getTime() == time && !processList[i].end())
+				processes[processList[i].getLevel()].push_back(&processList[i]);
+		}
+
+		//Remocao geral na lista
+		while (j < CPU && k < 5)
+		{
+			while (k < 5 && processes[k].size() == 0)
+				k++;
+			if (k == 5)
+				break;
+			if (processes[k].front()->getMemory() + memory < totalMemory)
+			{
+				processes[k].front()->setSlice();
+				processes[k].front()->setLevel(false);
+			}
+			j++;
+		}
+
+		//Atualizacao na lista pelas prioridades
+
+
+		//Atualizacao na lista para a duracao
+		for (unsigned i = 0; i < processList.size(); i++)
+		{
+			if (processList[i].end())
+				n--;
+			processList[i].setDuration();
+			processList[i].setChange(memory,totalMemory);
+		}
+
+		//Avanco no tempo
+		time++;
+	}
 
     return 0;
 }
