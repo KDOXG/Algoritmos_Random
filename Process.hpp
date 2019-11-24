@@ -22,14 +22,15 @@ private:
 	unsigned total;     //Número de slices necessários para executar o processo
 public:
 	Process(unsigned time, unsigned slice, unsigned memory, byte level);
-	unsigned getMemory();
 	unsigned getTime();
 	unsigned getTotal();
-	byte getLevel();
-	void setLevel(bool memory);
-	byte getSlice();
-	void setSlice();
 	unsigned getDuration();
+	state_t getState();
+	unsigned getMemory();
+	byte getLevel();
+	byte getSlice();
+	void setLevel();
+	void setSlice();
 	void setDuration();
 	void setChange(unsigned m, unsigned n);
 	bool end();

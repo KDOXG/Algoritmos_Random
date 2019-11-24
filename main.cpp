@@ -6,7 +6,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <cstdbool>
-#include "Process.cpp"
+#include "Process.hpp"
 
 int error(const char* arg);
 
@@ -42,17 +42,17 @@ int main(int argc, char* argv[])
 			getline(file, param);
 
 			i = 0;
-			i = param.find(',', i);
+			i = (byte)param.find(',', i);
 			aux = param.substr(0, i - 1);
 			time = std::stoul(aux, NULL, 0);
 			i += 2;
 
-			j = param.find(',', i);
+			j = (byte)param.find(',', i);
 			aux = param.substr(i, j - 1);
 			slice = std::stoul(aux, NULL, 0);
 			j += 2;
 
-			k = param.find(',', j);
+			k = (byte)param.find(',', j);
 			aux = param.substr(j, k - 1);
 			memory = std::stoul(aux, NULL, 0);
 			k += 2;
@@ -91,21 +91,30 @@ int main(int argc, char* argv[])
 		}
 
 		//Remocao geral na lista
-		while (j < CPU && k < 5)
+		while (j < CPU)
 		{
 			while (k < 5 && processes[k].size() == 0)
 				k++;
 			if (k == 5)
 				break;
+			//if (processes[k].front()->getState() == EM_ESPERA)
 			if (processes[k].front()->getMemory() + memory < totalMemory)
 			{
 				processes[k].front()->setSlice();
-				processes[k].front()->setLevel(false);
+				processes[k].front()->setLevel();
+				processes[processes[k].front()->getLevel()].push_back(processes[k].front());
+				processes[k].pop_front();
+			}
+			else
+			{
+				processes[k].front()->setChange(memory,totalMemory);
+				processes[k].push_back(processes[k].front());
+				processes[k].pop_front();
 			}
 			j++;
 		}
 
-		//Atualizacao na lista pelas prioridades
+		//Atualizacao na lista pela execucao
 
 
 		//Atualizacao na lista para a duracao
@@ -124,7 +133,7 @@ int main(int argc, char* argv[])
     return 0;
 }
 
-int error(char* arg)
+int error(const char* arg)
 {
     std::cout << arg;
     return -1;
