@@ -172,7 +172,7 @@ int main(int argc, char* argv[])
 		file_out << processList[i].getDuration() << "\n";
 		i++;
 	}
-	file_out.close;
+	file_out.close();
 
     return 0;
 }

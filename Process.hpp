@@ -16,7 +16,6 @@ private:
 	unsigned time;      //Representa o tempo em que o processo é recebido pelo SO
 	unsigned slice;     //Número de slices restantes para executar o processo
 	unsigned memory;    //Memoria a gastar
-	byte init;			//Nivel de prioridade inicial. Limite: 4
 	byte level;         //Flag para nivel de prioridade.
 	/*	0b00000001	- prioridade 0
 	 *	0b00000010	- prioridade 1
@@ -38,10 +37,8 @@ public:
 	unsigned getTotal();
 	unsigned getDuration();
 	unsigned getMemory();
-	byte getInit();
 	state_t getStatus();
 	byte getLevel();
-	byte getSlice();
 	void setLevel();
 	void setSlice(unsigned time);
 	void setDuration();

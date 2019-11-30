@@ -24,7 +24,6 @@ Process::Process(unsigned time, unsigned slice, unsigned memory, byte level)
 		this->level = 0b10010000;
 		break;
 	}
-	init = level;
 	total = slice;
 	read = -1;
 	call = 0;
@@ -54,10 +53,6 @@ unsigned Process::getMemory()
 {
 	return memory;
 }
-byte Process::getInit()
-{
-	return init;
-}
 byte Process::getLevel()
 {
 	if ((level & 0b00010000) == 0b00010000) return 4;
@@ -65,10 +60,7 @@ byte Process::getLevel()
 	if ((level & 0b00000100) == 0b00000100) return 2;
 	if ((level & 0b00000010) == 0b00000010) return 1;
 	if ((level & 0b00000001) == 0b00000001) return 0;
-}
-byte Process::getSlice()
-{
-	return call;
+	return 0;
 }
 void Process::setLevel()
 {
@@ -83,7 +75,7 @@ void Process::setLevel()
 	}
 	if (call == 10 && (level & 0b01000000) == 0b01000000)	//Decrementando a prioridade
 	{
-		if (((level & 0b10111111) >> level+1) != 0)
+		if (((level & 0b10111111) >> (level+1)) != 0)
 		level &= 0b10111111;
 		level |= 0b10000000;
 		level >>= 1;
